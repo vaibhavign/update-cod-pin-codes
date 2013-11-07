@@ -151,7 +151,7 @@ $i++;
 }
 }
 
-$querystr = "SELECT pincode FROM wp_cod_aramex";
+$querystr = "SELECT pincode FROM ".$wpdb->prefix."cod_aramex";
 $postid = $wpdb->get_results($querystr,ARRAY_A);
 foreach($postid as $key=>$val){
     $dbpincode[$val['pincode']]=$val['pincode'];
@@ -164,7 +164,7 @@ $arrayToDelete = array_diff($dbpincode,$pincode);
 $ax = 0;
 foreach($arrayToDelete as $key=>$val){
   //  echo "delete FROM wp_cod_dtdc where pincode=".$val."<br>";
-    $querystr = $wpdb->get_results("delete FROM wp_cod_aramex where pincode=".$val);
+    $querystr = $wpdb->get_results("delete FROM ".$wpdb->prefix."cod_aramex where pincode=".$val);
    $ax++; 
 }
 
@@ -176,7 +176,7 @@ foreach($arrayToINsert as $key=>$val){
   //  $querystr = $wpdb->get_results("delete FROM wp_cod_dtdc where pincode=".$val);
 
     $wpdb->insert( 
-	'wp_cod_aramex', 
+	$wpdb->prefix.'cod_aramex', 
 	array( 
 		'pincode' => $val,
                 'city' => $pincodea[$val]['city'],
@@ -217,7 +217,7 @@ $i++;
 }
 }
 
-$querystr = "SELECT pincode FROM wp_bluedart_codpins";
+$querystr = "SELECT pincode FROM ".$wpdb->prefix."bluedart_codpins";
 $postid = $wpdb->get_results($querystr,ARRAY_A);
 foreach($postid as $key=>$val){
     $dbpincode[$val['pincode']]=$val['pincode'];
@@ -230,7 +230,7 @@ $arrayToDelete = array_diff($dbpincode,$pincode);
 $ax = 0;
 foreach($arrayToDelete as $key=>$val){
   //  echo "delete FROM wp_cod_dtdc where pincode=".$val."<br>";
-    $querystr = $wpdb->get_results("delete FROM wp_bluedart_codpins where pincode=".$val);
+    $querystr = $wpdb->get_results("delete FROM ".$wpdb->prefix."bluedart_codpins where pincode=".$val);
    $ax++; 
 }
 
@@ -242,7 +242,7 @@ foreach($arrayToINsert as $key=>$val){
   //  $querystr = $wpdb->get_results("delete FROM wp_cod_dtdc where pincode=".$val);
 
     $wpdb->insert( 
-	'wp_bluedart_codpins', 
+	$wpdb->prefix.'bluedart_codpins', 
 	array( 
 		'pincode' => $val,
                 'city' => $pincodea[$val]['city'],
