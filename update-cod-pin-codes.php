@@ -51,22 +51,22 @@ function update_pincode_page (){
 			<div id="icon-options-general" class="icon32">
 				<br />
 			</div> 
-			<h2><?php _e( 'Eshopbox Bluedart panel', 'wc-bluedart' ); ?></h2>
+			<h2><?php _e( 'Eshopbox Update COD pincode panel', 'wc-bluedart' ); ?></h2>
 			<?php if ( isset( $_POST['pip_fields_submitted'] ) && $_POST['pip_fields_submitted'] == 'submitted' ) { ?>
 			<div id="message" class="updated fade"><p><strong><?php _e( 'Your settings have been saved.', 'wc-bluedart' ); ?></strong></p></div>
 			<?php } ?>
-			<p><?php _e( 'Change settings for bluedart panel.', 'wc-bluedart' ); ?></p>
+			<p><?php _e( 'Upload latest pincode xls file.', 'wc-bluedart' ); ?></p>
 			<div id="content">
 			  <form method="post" name="batchforma" id="batchforma" action="" enctype="multipart/form-data" >
 				 
 				  <div id="poststuff">
 						<div class="postbox">
-							<h3 class="hndle"><?php _e( 'Download softdata with manifest id', 'wc-bluedart' ); ?></h3>
+							<h3 class="hndle"><?php _e( 'Upload file', 'wc-bluedart' ); ?></h3>
 							<div class="inside pip-preview">
 							  <table class="form-table">
 							    <tr>
     								<th>
-    									<label for="eshopbox_bluedart_store_name"><b><?php _e( 'Manifest id:', 'wc-bluedart' ); ?></b></label>
+    									<label for="eshopbox_bluedart_store_name"><b><?php _e( 'Upload file:', 'wc-bluedart' ); ?></b></label>
     								</th>
     								<td>
     									
@@ -100,8 +100,9 @@ function update_pincode_page (){
 <?php
 if($_POST['post1']=='post'){
   
-        // echo '<pre>'; print_r($_FILES);
-        // print_r($_POST);
+       //  echo '<pre>'; print_r($_FILES);
+       //  print_r($_POST); exit;
+   if(!isset($_POST['rad'])){die('Please select an option');}      
 	// for text files
 // for excel file
 //	if($_FILES['csvtext']['type']=='application/vnd.ms-excel'){
@@ -131,49 +132,63 @@ $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
 //print_r($sheetData);
 //exit;
 $i=0;
+if($_POST['rad']=='aramex'){
+// if sheet is of aramex
 foreach($sheetData as $sheetdata){
-
-	$pincodes = trim($sheetdata['C']);
-if(trim($sheetdata['N'])=='Yes'){
+	//$pincodes = trim($sheetdata['C']);  bluedart
+//if(trim($sheetdata['N'])=='Yes'){  bluedart
+	$pincodes = trim($sheetdata['A']);
+        $cityname =  trim($sheetdata['C']); 
+        $statename =  trim($sheetdata['E']);
+if(trim($sheetdata['M'])=='Y'){
 $pincode[$pincodes]= $pincodes ;
+$pincodea[$pincodes]['city']= $cityname ;
+$pincodea[$pincodes]['state']= $statename ; 
+$pincodea[$pincodes]['cod']= 'Y' ;
 //$pincode[$i] = $pincodes ;
 //print_r($sheetdata);
 $i++;
 }
 }
 
-$querystr = "SELECT pincode FROM wp_cod_dtdc";
+$querystr = "SELECT pincode FROM wp_cod_aramex";
 $postid = $wpdb->get_results($querystr,ARRAY_A);
 foreach($postid as $key=>$val){
     $dbpincode[$val['pincode']]=$val['pincode'];
 }
 
 $arrayToINsert = array_diff($pincode,$dbpincode);
-
 $arrayToDelete = array_diff($dbpincode,$pincode);
 
-echo sizeof($arrayToINsert).'--'.sizeof($arrayToDelete);
-
+//echo sizeof($arrayToINsert).'--'.sizeof($arrayToDelete);
+$ax = 0;
 foreach($arrayToDelete as $key=>$val){
-  //  $querystr = $wpdb->get_results("delete FROM wp_cod_dtdc where pincode=".$val);
-
+  //  echo "delete FROM wp_cod_dtdc where pincode=".$val."<br>";
+    $querystr = $wpdb->get_results("delete FROM wp_cod_aramex where pincode=".$val);
+   $ax++; 
 }
 
+echo $ax." rows deleted </br>";
+
+$bx = 0;
 foreach($arrayToINsert as $key=>$val){
-    
+   //   echo "Insert FROM wp_cod_dtdc where pincode=".$val."<br>";
   //  $querystr = $wpdb->get_results("delete FROM wp_cod_dtdc where pincode=".$val);
 
     $wpdb->insert( 
-	'wp_cod_dtdc', 
+	'wp_cod_aramex', 
 	array( 
-		'pincode' => $val
+		'pincode' => $val,
+                'city' => $pincodea[$val]['city'],
+                'state'=>$pincodea[$val]['state'],
+                'cod'=> $pincodea[$val]['cod']
 
 	)
 );
-   
+   $bx++;
 }
 
-
+echo $bx." rows added </br>";
 
 //echo $i.'---';
 //echo sizeof($pincode);
@@ -182,7 +197,73 @@ foreach($arrayToINsert as $key=>$val){
 //print_r($pincode);
 //print_r($arrayToDelete);
 exit;
+} else if($_POST['rad']=='bluedart'){
+    
+    // if sheet is of bluedart
+foreach($sheetData as $sheetdata){
+	$pincodes = trim($sheetdata['C']);  //bluedart
+if(trim($sheetdata['N'])=='Yes'){  //bluedart
+	//$pincodes = trim($sheetdata['A']);
+        $cityname =  trim($sheetdata['D']); 
+        $statename =  trim($sheetdata['F']);
+//if(trim($sheetdata['M'])=='Y'){
+$pincode[$pincodes]= $pincodes ;
+$pincodea[$pincodes]['city']= $cityname ;
+$pincodea[$pincodes]['state']= $statename ;
+$pincodea[$pincodes]['cod']= 'Yes' ;
+//$pincode[$i] = $pincodes ;
+//print_r($sheetdata);
+$i++;
+}
+}
 
+$querystr = "SELECT pincode FROM wp_bluedart_codpins";
+$postid = $wpdb->get_results($querystr,ARRAY_A);
+foreach($postid as $key=>$val){
+    $dbpincode[$val['pincode']]=$val['pincode'];
+}
+
+$arrayToINsert = array_diff($pincode,$dbpincode);
+$arrayToDelete = array_diff($dbpincode,$pincode);
+
+//echo sizeof($arrayToINsert).'--'.sizeof($arrayToDelete);
+$ax = 0;
+foreach($arrayToDelete as $key=>$val){
+  //  echo "delete FROM wp_cod_dtdc where pincode=".$val."<br>";
+    $querystr = $wpdb->get_results("delete FROM wp_bluedart_codpins where pincode=".$val);
+   $ax++; 
+}
+
+echo $ax." rows deleted </br>";
+
+$bx = 0;
+foreach($arrayToINsert as $key=>$val){
+   //   echo "Insert FROM wp_cod_dtdc where pincode=".$val."<br>";
+  //  $querystr = $wpdb->get_results("delete FROM wp_cod_dtdc where pincode=".$val);
+
+    $wpdb->insert( 
+	'wp_bluedart_codpins', 
+	array( 
+		'pincode' => $val,
+                'city' => $pincodea[$val]['city'],
+                'state'=>$pincodea[$val]['state'],
+                'cod'=> $pincodea[$val]['cod']
+
+	)
+);
+   $bx++;
+}
+
+echo $bx." rows added </br>";
+
+//echo $i.'---';
+//echo sizeof($pincode);
+//echo 'test';
+//echo '<pre>';
+//print_r($pincode);
+//print_r($arrayToDelete);
+exit;
+}
 //print_r($xyz);
 
 //	}
@@ -191,228 +272,6 @@ exit;
          
      }
 
-}
-
-
-
- 
- function readArrayExportxls($orderIds){
-      global $wpdb,$woocommerce;
-                $finalarray[]=array("Airwaybill","Type","Reference Number","Sender / Store name","attention","address1","address2","address3","pincode","tel number","mobile number","Prod/SKU code","contents"
-                ,"weight","Declared Value","Collectable Value","Vendor Code","Shipper Name","Return Address1","Return Address2","Return Address3","Return Pin","Length ( Cms )","Bredth ( Cms )","Height ( Cms )","Pieces","Area_customer_code","Handover Date","Handover Time"
-                );
-
-                
-            foreach($orderIds as $key=>$val){
-                 $theorder = new WC_Order($val);
-              //   echo '<pre>';
-              //   print_r($theorder);
-                 $items = $theorder->get_items();
-                 $product_id="";
-                 $product_name="";
-                 $productWeight="";
-                 $quant = "";
-                  foreach ( $items as $item ) {
-                     // echo '<pre>';
-                     // print_r($item);
-                                           $p =  get_post_meta($item['product_id']);
-                     
-
-                     
-                  $product_id .= $p['_sku'][0].',';
-    $_product = $theorder->get_product_from_item( $item );
-    $product_name .= $item['name'].',';
-   // $product_id .= $item['product_id'].',';
-    $product_variation_id = $item['variation_id'];
-  //  $productWeight += $_product->get_weight()/1000;
-     $productWeight += 0.4;
-   // $quant +=$item['qty'];
-         $quant =1;
-
-}
-               //  echo '<pre>';
-              //   print_r($theorder);
-$shipperName= get_option('shipper_name');
-$shipperPin = get_option('return_pincode');
-                 $vendorCode = get_option('vendor_code');
-                 if($theorder->payment_method=='cod'){
-                     $totalCollectible = $theorder->order_total;
-                     $custCode = get_option('cod_areacustomer');
-                     $payType = "COD";
-                 } else {
-                     $totalCollectible = 0;
-                     $custCode = get_option('prepaid_areacustomer');
-                     $payType = "NONCOD";
-                 }
-                 
-                 if($theorder->shipping_address_2==''){
-                     $shipAddress2 = '-';
-                 } else {
-                     $shipAddress2 = $theorder->shipping_address_2;
-                 }
-                 
-                 if(get_option('return_address1')==''){
-                     $shipperAddress1 = "-";
-                 } else {
-                     $shipperAddress1 = get_option('return_address1');
-                 }
-                 
-                 if(get_option('return_address2')==''){
-                     $shipperAddress2 = "-";
-                 } else {
-                     $shipperAddress2 = get_option('return_address2');
-                 }
-                 
-                  if(get_option('return_address3')==''){
-                     $shipperAddress3 = "-";
-                 } else {
-                     $shipperAddress3 = get_option('return_address3');
-                 }
-                 
-     $dateTime = explode(' ',date('d-m-Y h:m:s',$manifestDetails[0]->dates));
-                if($_POST['rad']=='' || $_POST['rad']=='both'){
-                 $finalarray[] = array($theorder->order_custom_fields['_tracking_number'][0],$payType,$theorder->id,$shipperName,$theorder->shipping_first_name.' '.$theorder->shipping_last_name,$theorder->shipping_address_1,$shipAddress2,'-',
-  $theorder->shipping_postcode,'-',$theorder->billing_phone,substr($product_id,0,-1),substr($product_name,0,-1),$productWeight, $theorder->order_total,$totalCollectible,$vendorCode,$shipperName,$shipperAddress1,$shipperAddress2,$shipperAddress3,$shipperPin,
-                     "20","20","20",$quant,$custCode,$dateTime[0],$dateTime[1]);
-                } else if($theorder->payment_method==$_POST['rad']){
-                          $finalarray[] = array($theorder->order_custom_fields['_tracking_number'][0],$payType,$theorder->id,$shipperName,$theorder->shipping_first_name.' '.$theorder->shipping_last_name,$theorder->shipping_address_1,$shipAddress2,'-',
-  $theorder->shipping_postcode,'-',$theorder->billing_phone,substr($product_id,0,-1),substr($product_name,0,-1),$productWeight, $theorder->order_total,$totalCollectible,$vendorCode,$shipperName,$shipperAddress1,$shipperAddress2,$shipperAddress3,$shipperPin,
-                     "20","20","20",$quant,$custCode,$dateTime[0],$dateTime[1]); 
-                }
-                
-                
-                
-                
-                     
-            }
-        //    include 'class/PHPExcel/IOFactory.php';
-
-//$myFile = $myFile;
-//echo get_include_path() . PATH_SEPARATOR . 'class/';
-//$objReader = PHPExcel_IOFactory::createReader('CSV');
-//$objPHPExcel = $objReader->load($finalarray);
-//$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-//echo $objWriter->save('MyExcelFile.xls');
-   ob_clean();     
-header('Content-Type: application/vnd.ms-excel;');                 // This should work for IE & Opera
-header("Content-type: application/x-msexcel");     
-header("Content-Disposition: attachment; filename=MyExcelFile.xls");
-header("Pragma: no-cache");
-header("Expires: 0");
-            
-    $outputBuffer = fopen("php://output", 'w');
-	foreach($finalarray as $val) {
-	    fputcsv($outputBuffer, $val);
-	}
-	fclose($outputBuffer);        
-      exit;  
- }
- 
-        
-        /**
-         * Create admin manifest page
-         * @global type $woocommerce
-         */
-
-function eshopbox_picklist_page() {
-    global $woocommerce;
-    global $wpdb;
-
-    $args = array(
-             'post_type' => 'shop_order',
-             'post_status' => 'publish',
-            'posts_per_page' => -1  
-    );
-
-    $my_query=get_posts($args);
-    $finalarray[]=array("Product name","color","size","quantity");
-    foreach($my_query as $key=>$val){
-      $abc = new WC_Order($val->ID);
-    //  echo '<pre>';
-     // print_r($abc);
-      if($abc->status=='processing'){
-
-       foreach($abc->get_items() as $key=>$item){
-          $sku = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value  FROM $wpdb->postmeta WHERE meta_key='_sku' AND post_id='%d' LIMIT 1", $item['product_id'] ) ); 
-           
-          echo '<pre>';
-          print_r($item);
-           
-         //  $pro[$item['name']][$item['pa_color']][$item['pa_size']] = $pro[$item['name']][$item['pa_color']][$item['pa_size']] + $item['qty']; 
-$pro[$val->ID][$sku][$item['pa_color']] = $item['pa_color']; 
-$pro[$val->ID][$sku][$item['pa_size']] = $pro[$sku][$item['pa_size']];
-$pro[$val->ID][$sku]['odate'] = $abc->order_date;
-       }
-      }
-
-    }
-
-    echo '<pre>';
-    print_r($pro);
-    foreach($pro as $key=>$val){
-       foreach($val as $key1=>$val1){
-           foreach($val1 as $key2=>$val2){
-             $finalarray[] = array($key,$key1,$key2,$val2); 
-           }
-       }
-    }
-
-if($_GET['d']=='true'){
-    ob_clean();
-    header("Content-type: text/csv");
-    header("Content-Disposition: attachment; filename=picklist.xls");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    $this->outputCSV($finalarray);
-}
-    ?>
-    <div id="manifesttable">
-        <table width="100%" cellspacing="0" cellpadding="0" class="widefat">
-            <thead>
-                <tr>
-        <th style="padding:7px 7px 8px; "><?php if(count($finalarray)>1){  ?><a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=eshopbox-picklist&d=true">Download</a><?php } ?></th>            
-        <th style="padding:7px 7px 8px; ">Name</th>
-        <th style="padding:7px 7px 8px; ">Color</th>
-        <th style=" padding:7px 7px 8px;">Size</th>
-        <th style="padding:7px 7px 8px;">Quantity</th>
-       </tr></thead>
-            <tfoot>
-                <tr>
-                    <th style="padding:7px 7px 8px; "><?php if(count($finalarray)>1){  ?><a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=eshopbox-picklist&d=true">Download</a><?php }  ?></th>
-                <th style="padding:7px 7px 8px; ">Name</th>
-        <th style="padding:7px 7px 8px; ">Color</th>
-        <th style=" padding:7px 7px 8px;">Size</th>
-        <th style="padding:7px 7px 8px;">Quantity</th>
-        </tr></tfoot>
-
-    <tbody id="manifdetail">
-        <?php
-    if(count($finalarray)>1){  
-        unset($finalarray[0]);
-        foreach($finalarray as $key=>$value){
-       echo  '<tr>
-                <th style="padding:7px 7px 8px; ">'.$value[0].'</th>
-        <th style="padding:7px 7px 8px; ">'.$value[1].'</th>
-        <th style=" padding:7px 7px 8px;">'.$value[2].'</th>
-        <th style="padding:7px 7px 8px;">'.$value[3].'</th>
-        </tr>';
-    }} else {
-        echo "No processing order";
-    }
-        ?>
- </tbody>
-    </table>
-</div>
- <?php
-}     
-
-public function outputCSV($finalarray){
-	$outputBuffer = fopen("php://output", 'w');
-	foreach($finalarray as $val) {
-	    fputcsv($outputBuffer, $val);
-	}
-	fclose($outputBuffer);
-        exit;
 }
 
 /**
