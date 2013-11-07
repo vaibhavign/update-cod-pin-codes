@@ -143,7 +143,7 @@ foreach($sheetData as $sheetdata){
 if(trim($sheetdata['M'])=='Y'){
 $pincode[$pincodes]= $pincodes ;
 $pincodea[$pincodes]['city']= $cityname ;
-$pincodea[$pincodes]['state']= $statename ; 
+$pincodea[$pincodes]['state']= $pincodes ; 
 $pincodea[$pincodes]['cod']= 'Y' ;
 //$pincode[$i] = $pincodes ;
 //print_r($sheetdata);
@@ -189,6 +189,9 @@ foreach($arrayToINsert as $key=>$val){
 }
 
 echo $bx." rows added </br>";
+
+
+
 
 //echo $i.'---';
 //echo sizeof($pincode);
@@ -255,7 +258,17 @@ foreach($arrayToINsert as $key=>$val){
 }
 
 echo $bx." rows added </br>";
-
+$filename = 'process.txt';
+$file = WP_PLUGIN_DIR."/update-cod-pin-codes/".$filename; 
+// The new person to add to the file
+$message = "/n Log created dated ".date('d-m-Y h-m-s')."/n";
+$message .= $ax." rows deleted from bluedart with pincodes ".implode(',',$arrayToDelete)."/n";
+$message .= $bx." rows added to bluedart with pincodes ".implode(',',$arrayToINsert)."/n";
+$message .= "***************************************************************** /n";
+// Write the contents to the file, 
+// using the FILE_APPEND flag to append the content to the end of the file
+// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
+file_put_contents($file, $message, FILE_APPEND | LOCK_EX);
 //echo $i.'---';
 //echo sizeof($pincode);
 //echo 'test';

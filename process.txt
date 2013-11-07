@@ -1,0 +1,37 @@
+log created on 07-11-2013 02-11-56
+0 rows deleted having pincodes \n0 rows added having pincodes \nlog created on 07-11-2013 02-11-53
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-48
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-18
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-13
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-31
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-19
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-07
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-04
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************
+ log created on 07-11-2013 02-11-34
+0 rows deleted having pincodes 
+0 rows added having pincodes 
+****************************************************************************************************************************/n Log created dated 07-11-2013 02-11-04 /n/n Log created dated 07-11-2013 02-11-00/n0 rows deleted from bluedart with pincodes /n2 rows added to bluedart with pincodes 110003,110004/n***************************************************************** /n
