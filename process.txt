@@ -1,0 +1,10 @@
+ 
+ Log created dated 08-11-2013 08-11-05 
+0 rows deleted from aramex with pincodes  
+0 rows added to aramex with pincodes  
+***************************************************************** 
+ 
+ Log created dated 08-11-2013 08-11-04 
+0 rows deleted from aramex with pincodes  
+1 rows added to aramex with pincodes 110010 
+***************************************************************** 

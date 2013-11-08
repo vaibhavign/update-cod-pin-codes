@@ -45,6 +45,7 @@ function woocommerce_updatepincode_admin_menu() {
  
 function update_pincode_page (){
        global $wpdb;
+        
     ?>
     
                  <div class="wrap">
@@ -156,7 +157,8 @@ function update_pincode_page (){
 
         // add to log the operation done
         $filename = 'process.txt';
-        $file = WP_PLUGIN_DIR."/update-cod-pin-codes/".$filename; 
+   
+        $file = $this->plugin_path()."/".$filename; 
         $message = " \n Log created dated ".date('d-m-Y h-m-s')." \n";
         $message .= $ax." rows deleted from aramex with pincodes ".implode(',',$arrayToDelete)." \n";
         $message .= $bx." rows added to aramex with pincodes ".implode(',',$arrayToINsert)." \n";
@@ -164,7 +166,7 @@ function update_pincode_page (){
         // Write the contents to the file, 
         // using the FILE_APPEND flag to append the content to the end of the file
         // and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-        file_put_contents($file, $message, FILE_APPEND | LOCK_EX);
+        file_put_contents($file, $message, FILE_APPEND | LOCK_EX); 
     exit;
 
 
@@ -218,7 +220,7 @@ function update_pincode_page (){
         echo $bx." rows added </br>";
 
         $filename = 'process.txt';
-        $file = WP_PLUGIN_DIR."/update-cod-pin-codes/".$filename; 
+        $file = $this->plugin_path()."/".$filename; 
         $message = " \n Log created dated ".date('d-m-Y h-m-s')." \n";
         $message .= $ax." rows deleted from bluedart with pincodes ".implode(',',$arrayToDelete)." \n";
         $message .= $bx." rows added to bluedart with pincodes ".implode(',',$arrayToINsert)." \n";
